@@ -1,0 +1,54 @@
+# 节点使用Shadowrocket首页已有订阅
+# PROXY代表首页当前选中的节点
+# 网站DNS通过代理；节点域名单独使用加密DNS解析
+
+[General]
+dns-server = https://1.1.1.1/dns-query#proxy
+fallback-dns-server = https://1.0.0.1/dns-query#proxy
+proxy-dns-server = https://dns.alidns.com/dns-query
+dns-direct-system = false
+always-ip-address = false
+use-local-host-item-for-proxy = false
+ipv6 = false
+prefer-ipv6 = false
+private-ip-answer = true
+hijack-dns = :53
+udp-policy-not-supported-behaviour = REJECT
+allow-dns-svcb = false
+
+[Proxy Group]
+🚀 节点选择 = select,PROXY,♻️ 自动选择,DIRECT,policy-select-name=PROXY
+♻️ 自动选择 = url-test,policy-regex-filter=.*,url=http://www.gstatic.com/generate_204,interval=300,tolerance=50,timeout=5
+🍎 苹果服务 = select,DIRECT,🚀 节点选择,♻️ 自动选择,policy-select-name=DIRECT
+Ⓜ️ 微软服务 = select,DIRECT,🚀 节点选择,♻️ 自动选择,policy-select-name=DIRECT
+📚 学术数据库 = select,DIRECT,🚀 节点选择,♻️ 自动选择,policy-select-name=DIRECT
+
+[Rule]
+# Google特殊规则
+DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🚀 节点选择
+DOMAIN-SUFFIX,services.googleapis.cn,🚀 节点选择
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/GoogleCNProxyIP.list,🚀 节点选择,no-resolve
+
+# 局域网直连
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list,DIRECT,no-resolve
+
+# 苹果、微软独立分流
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list,🍎 苹果服务,no-resolve
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list,Ⓜ️ 微软服务,no-resolve
+
+# 你自己托管的学术数据库规则
+RULE-SET,https://raw.githubusercontent.com/paulc-y/my_rule/refs/heads/main/rules/Academic.list,📚 学术数据库,no-resolve
+
+# 国内直连与广告规则
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list,DIRECT,no-resolve
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list,DIRECT,no-resolve
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaMedia.list,DIRECT,no-resolve
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list,REJECT,no-resolve
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list,REJECT,no-resolve
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list,DIRECT,no-resolve
+RULE-SET,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaIp.list,DIRECT,no-resolve
+GEOIP,CN,DIRECT,no-resolve
+FINAL,🚀 节点选择
+
+[Host]
+dns.alidns.com = 223.5.5.5
